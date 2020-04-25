@@ -2,8 +2,8 @@
     <string name="app_name">YandexGithub</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="first_fragment_label">YandexGithub</string>
+    <string name="second_fragment_label">YandexGithub</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -13,4 +13,8 @@
 
     <string name="searchMenu">Поиск</string>
     <string name="historyMenu">История</string>
+    <string name="searchHint">Enter search query</string>
+    <string name="loadButton">Loading</string>
+    <string name="errorButton">Try again</string>
+    <string name="searchButton">Search</string>
 </resources>

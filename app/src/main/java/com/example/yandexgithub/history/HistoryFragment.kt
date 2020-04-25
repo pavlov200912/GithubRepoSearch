@@ -1,4 +1,4 @@
-package com.example.yandexgithub
+package com.example.yandexgithub.history
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
+import com.example.yandexgithub.R
 import com.example.yandexgithub.databinding.FragmentHistoryBinding
 
 /**
@@ -21,10 +22,6 @@ class HistoryFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding = DataBindingUtil.inflate<FragmentHistoryBinding>(inflater,
             R.layout.fragment_history, container, false)
-        binding.fab.setOnClickListener {
-            view ->
-            view.findNavController().navigate(R.id.action_HistoryFragment_to_SearchFragment)
-        }
         return binding.root
     }
 
