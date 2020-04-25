@@ -24,7 +24,7 @@ private val retrofit = Retrofit.Builder()
 
 interface GitApiService {
     @GET("search/repositories")
-    fun getProperties(@Query("q") query: String):
+    fun getPropertiesAsync(@Query("q") query: String):
             Deferred<Result>
 }
 

@@ -3,6 +3,7 @@ package com.example.yandexgithub.network
 import com.squareup.moshi.Json
 
 // TODO: Add owner, created_at, language
+
 data class GitProperty(val id: Long,
                        val name: String,
                        @Json(name = "html_url") val htmlUrl: String,

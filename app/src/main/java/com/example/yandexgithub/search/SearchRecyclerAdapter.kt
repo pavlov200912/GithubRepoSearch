@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.yandexgithub.R
 import com.example.yandexgithub.databinding.SearchviewItemBinding
 import com.example.yandexgithub.network.GitProperty
 
@@ -33,9 +34,12 @@ class SearchRecyclerAdapter(private val onClickListener: OnClickListener ) : Lis
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GitPropertyViewHolder {
+
         return GitPropertyViewHolder(
             SearchviewItemBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context),
+                parent,
+                false
             )
         )
     }

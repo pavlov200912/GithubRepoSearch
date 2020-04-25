@@ -1,7 +1,6 @@
 package com.example.yandexgithub.search
 
 import android.util.Log
-import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -60,7 +59,7 @@ class SearchViewModel: ViewModel() {
                 return@launch
             }
 
-            val getPropertiesDeferred = GitApi.retrofitService.getProperties(queryText.value!!)
+            val getPropertiesDeferred = GitApi.retrofitService.getPropertiesAsync(queryText.value!!)
             try {
                 _status.value = GitApiStatus.LOADING
                 // Await the completion of our Retrofit request
