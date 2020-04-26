@@ -50,6 +50,19 @@ class HistoryViewModel(
         }
     }
 
+    fun clearData() {
+        uiScope.launch {
+            _reposData.value = ArrayList()
+            clearDB()
+        }
+    }
+
+    private suspend fun clearDB() {
+        withContext(Dispatchers.IO) {
+            database.clear()
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()

@@ -17,7 +17,7 @@ import com.example.yandexgithub.databinding.FragmentHistoryBinding
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 class HistoryFragment : Fragment() {
-    val viewModel by lazy {
+    private val viewModel by lazy {
         val application = requireNotNull(this.activity).application
 
         // Create an instance of the ViewModel Factory.
@@ -43,6 +43,10 @@ class HistoryFragment : Fragment() {
         )
 
         binding.viewModel = viewModel
+
+        binding.clearButton.setOnClickListener {
+            viewModel.clearData()
+        }
 
         val adapter = HistoryRecyclerAdapter(HistoryRecyclerAdapter.OnClickListener {
             viewModel.changeFavorite(it)

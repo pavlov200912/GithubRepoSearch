@@ -1,5 +1,6 @@
 package com.example.yandexgithub
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.widget.Button
@@ -70,6 +71,7 @@ fun ImageView.setFavoriteColor(gitRepo: GitRepo) {
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 @BindingAdapter("dateFormat")
 fun TextView.setDateFormat(item: GitRepo) {
     val formatter = SimpleDateFormat("yyyy-MM-dd")

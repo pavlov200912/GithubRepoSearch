@@ -36,9 +36,9 @@ class SearchFragment : Fragment() {
         val viewModelFactory = SearchViewModelFactory(dataSource, application)
 
         // Get a reference to the ViewModel associated with this fragment.
-
         val viewModel = ViewModelProviders.of(
-            this, viewModelFactory).get(SearchViewModel::class.java)
+            this, viewModelFactory
+        ).get(SearchViewModel::class.java)
 
         binding.viewModel = viewModel
 
