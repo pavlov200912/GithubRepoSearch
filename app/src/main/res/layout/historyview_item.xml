@@ -37,7 +37,7 @@
                 android:text="@{@string/repo_name(repo.name, repo.owner)}"
                 android:textColor="@color/repoNameColor"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/favoriteView"
                 app:layout_constraintStart_toEndOf="@+id/repoImage"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,6 +45,7 @@
                 android:id="@+id/dateView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/repoNameColor"
                 app:dateFormat="@{repo}"
@@ -98,6 +99,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_repo" />
+
+            <ImageView
+                android:id="@+id/favoriteView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:favoriteColor="@{repo}"
+                app:srcCompat="@drawable/ic_favourite" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

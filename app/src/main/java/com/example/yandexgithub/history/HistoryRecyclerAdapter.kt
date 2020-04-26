@@ -1,14 +1,17 @@
 package com.example.yandexgithub.history
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yandexgithub.database.GitRepo
 import com.example.yandexgithub.databinding.HistoryviewItemBinding
 import com.example.yandexgithub.network.GitProperty
-import com.example.yandexgithub.search.SearchRecyclerAdapter
+import com.example.yandexgithub.setFavoriteColor
 
 class HistoryRecyclerAdapter(private val onClickListener: HistoryRecyclerAdapter.OnClickListener) : ListAdapter<GitRepo,
         HistoryRecyclerAdapter.GitRepoViewHolder>(HistoryRecyclerAdapter) {
@@ -17,9 +20,21 @@ class HistoryRecyclerAdapter(private val onClickListener: HistoryRecyclerAdapter
         HistoryviewItemBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
+        fun onClicked() {
+            changeFavoriteColor()
+        }
         fun bind(gitRepo: GitRepo) {
             binding.repo = gitRepo
             binding.executePendingBindings()
+        }
+
+        private fun changeFavoriteColor() {
+            binding.favoriteView.imageTintList = if(binding.favoriteView.imageTintList ==
+                ColorStateList.valueOf(Color.RED)) {
+                ColorStateList.valueOf(Color.parseColor("#333333"))
+            } else {
+                ColorStateList.valueOf(Color.RED)
+            }
         }
     }
     companion object DiffCallback : DiffUtil.ItemCallback<GitRepo>() {
@@ -47,6 +62,7 @@ class HistoryRecyclerAdapter(private val onClickListener: HistoryRecyclerAdapter
         val gitRepo = getItem(position)
         holder.itemView.setOnClickListener {
             onClickListener.onClick(gitRepo)
+            holder.onClicked()
         }
         holder.bind(gitRepo)
     }

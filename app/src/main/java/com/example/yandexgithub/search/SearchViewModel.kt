@@ -61,7 +61,7 @@ class SearchViewModel(
      */
     fun getGitProperties() {
         retrofitScope.launch {
-            if (queryText.value == null) {
+            if (queryText.value == null || queryText.value == "") {
                 _status.value = GitApiStatus.QUERY_ERROR
                 return@launch
             }
@@ -110,9 +110,11 @@ class SearchViewModel(
                 dateOfCreation = creationDate,
                 dateOfVisit = visitDate
             )
-            if (database.get(gitProperty.id) == null) {
+            val storedRepo = database.get(gitProperty.id)
+            if (storedRepo == null) {
                 database.insert(repo)
             } else {
+                repo.isFavorite = storedRepo.isFavorite
                 database.update(repo)
             }
         }

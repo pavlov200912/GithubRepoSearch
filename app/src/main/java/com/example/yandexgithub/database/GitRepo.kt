@@ -24,7 +24,9 @@ data class GitRepo(
     @ColumnInfo(name = "created_date")
     val dateOfCreation: Date?,
     @ColumnInfo(name = "visited_date")
-    val dateOfVisit: Date?
+    val dateOfVisit: Date?,
+    @ColumnInfo(name = "is_favorite")
+    var isFavorite: Boolean = false
 ) {
     fun getFormattedName(): String {
         return ""

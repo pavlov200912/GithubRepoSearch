@@ -1,15 +1,11 @@
 package com.example.yandexgithub
 
 import android.content.res.ColorStateList
-import android.util.Log
+import android.graphics.Color
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.databinding.BindingMethod
-import androidx.databinding.BindingMethods
-import androidx.databinding.InverseBindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yandexgithub.database.GitRepo
 import com.example.yandexgithub.history.HistoryRecyclerAdapter
@@ -61,11 +57,17 @@ fun bindStatus(statusButton: Button, status: GitApiStatus?) {
 
 @BindingAdapter("languageColor")
 fun ImageView.setLanguageColor(item: GitRepo) {
-    Log.i("COLOR", "i was here")
-
     imageTintList = ColorStateList.valueOf(languageToColor(item.language))
-    //setColorFilter(languageToColor("Scala"))
-    //setColorFilter(languageToColor(item.language))
+}
+
+
+@BindingAdapter("favoriteColor")
+fun ImageView.setFavoriteColor(gitRepo: GitRepo) {
+    imageTintList = if(gitRepo.isFavorite) {
+        ColorStateList.valueOf(Color.RED)
+    } else {
+        ColorStateList.valueOf(Color.parseColor("#333333"))
+    }
 }
 
 @BindingAdapter("dateFormat")

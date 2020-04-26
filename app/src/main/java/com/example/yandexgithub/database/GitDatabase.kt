@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [GitRepo::class], version = 2, exportSchema = false)
+@Database(entities = [GitRepo::class], version = 4, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class GitDatabase : RoomDatabase() {
     abstract val gitDatabaseDao: GitDatabaseDao

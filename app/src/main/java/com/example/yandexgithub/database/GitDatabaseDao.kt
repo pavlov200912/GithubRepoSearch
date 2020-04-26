@@ -21,5 +21,9 @@ interface GitDatabaseDao {
     fun clear()
 
     @Query("SELECT * FROM repo_table ORDER BY visited_date DESC")
-    fun getVisited(): LiveData<List<GitRepo>>
+    fun getVisited(): List<GitRepo>
+
+
+    @Query("SELECT * FROM repo_table WHERE is_favorite = 1 ORDER BY visited_date DESC")
+    fun getFavorite(): List<GitRepo>
 }

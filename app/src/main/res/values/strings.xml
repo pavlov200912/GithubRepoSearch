@@ -20,4 +20,6 @@
     <string name="searchButton">Search</string>
 
     <string name="repo_name">%2$s/<b>%1$s</b></string>
+    <string name="show_favorite">Избранное</string>
+    <string name="show_all">Все</string>
 </resources>
