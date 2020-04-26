@@ -1,23 +1,31 @@
 package com.example.yandexgithub.search
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.yandexgithub.database.GitDatabaseDao
+import com.example.yandexgithub.database.GitRepo
 import com.example.yandexgithub.network.GitApi
 import com.example.yandexgithub.network.GitProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 enum class GitApiStatus { LOADING, INTERNET_ERROR, QUERY_ERROR, DONE }
 /**
  * The [ViewModel] that is attached to the [SearchFragment].
  */
-class SearchViewModel: ViewModel() {
-    val queryText = MutableLiveData<String>()
+class SearchViewModel(
+    private val database: GitDatabaseDao,
+    application: Application
+) : AndroidViewModel(application) {
 
+    val queryText = MutableLiveData<String>()
 
     private val _status = MutableLiveData<GitApiStatus>()
 
@@ -39,8 +47,9 @@ class SearchViewModel: ViewModel() {
     private var viewModelJob = Job()
 
     // the Coroutine runs using the Main (UI) dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
+    private val retrofitScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     init {
         queryText.value = ""
@@ -51,28 +60,60 @@ class SearchViewModel: ViewModel() {
      * Mars properties retrieved.
      */
     fun getGitProperties() {
-        Log.i("onClick", "CLICKED")
-        Log.i("onClick", "Text: ${queryText.value!!}")
-        coroutineScope.launch {
+        retrofitScope.launch {
             if (queryText.value == null) {
                 _status.value = GitApiStatus.QUERY_ERROR
                 return@launch
             }
 
-            val getPropertiesDeferred = GitApi.retrofitService.getPropertiesAsync(queryText.value!!)
             try {
                 _status.value = GitApiStatus.LOADING
                 // Await the completion of our Retrofit request
-                val result = getPropertiesDeferred.await()
+                val result = withContext(Dispatchers.IO) {
+                    GitApi.retrofitService.getPropertiesAsync(queryText.value!!)
+                }.await()
+
                 Log.i("API_RESPONSE", result.toString())
 
                 _status.value = GitApiStatus.DONE
                 _properties.value = result.items
             } catch (e: Exception) {
-                Log.i("onClick", "RESPONSE_ERROR + ${e.message}")
+                Log.i("GitAPI", "RESPONSE_ERROR + ${e.message}")
 
                 _properties.value = ArrayList()
                 _status.value = GitApiStatus.INTERNET_ERROR
+            }
+        }
+    }
+
+    fun saveClickedRepo(gitProperty: GitProperty) {
+        uiScope.launch {
+            saveGitRepo(gitProperty)
+        }
+    }
+
+    private suspend fun saveGitRepo(gitProperty: GitProperty) {
+        withContext(Dispatchers.IO) {
+            val format = SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US
+            )
+            format.timeZone = TimeZone.getTimeZone("UTC")
+            val creationDate: Date? = format.parse(gitProperty.created)
+            val visitDate: Date = Calendar.getInstance().time
+            val repo =  GitRepo(
+                id = gitProperty.id,
+                name = gitProperty.name,
+                owner = gitProperty.owner?.login ?: "",
+                url = gitProperty.htmlUrl,
+                description = gitProperty.description ?: "",
+                language = gitProperty.language ?: "",
+                dateOfCreation = creationDate,
+                dateOfVisit = visitDate
+            )
+            if (database.get(gitProperty.id) == null) {
+                database.insert(repo)
+            } else {
+                database.update(repo)
             }
         }
     }

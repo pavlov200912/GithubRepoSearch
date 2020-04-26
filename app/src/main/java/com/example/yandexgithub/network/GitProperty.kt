@@ -9,7 +9,7 @@ data class GitProperty(val id: Long,
                        @Json(name = "html_url") val htmlUrl: String,
                        val description: String?,
                        val owner: Owner?,
-                       @Json(name = "created_at") val created: String?,
+                       @Json(name = "created_at") val created: String,
                        val language: String?) {
     fun getReadableHtml(): String {
         return htmlUrl.split("/").takeLast(2).joinToString("/")

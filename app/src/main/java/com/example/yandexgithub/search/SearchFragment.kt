@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.yandexgithub.database.GitDatabase
 import com.example.yandexgithub.databinding.FragmentSearchBinding
 
 
@@ -20,18 +21,30 @@ import com.example.yandexgithub.databinding.FragmentSearchBinding
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class SearchFragment : Fragment() {
-    private val viewModel: SearchViewModel by lazy {
-        ViewModelProviders.of(this).get(SearchViewModel::class.java)
-    }
+
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentSearchBinding.inflate(inflater)
 
+        val application = requireNotNull(this.activity).application
+
+        // Create an instance of the ViewModel Factory.
+        val dataSource = GitDatabase.getInstance(application).gitDatabaseDao
+        val viewModelFactory = SearchViewModelFactory(dataSource, application)
+
+        // Get a reference to the ViewModel associated with this fragment.
+
+        val viewModel = ViewModelProviders.of(
+            this, viewModelFactory).get(SearchViewModel::class.java)
+
+        binding.viewModel = viewModel
+
+
         viewModel.status.observe(viewLifecycleOwner, Observer {
-            if(it == GitApiStatus.INTERNET_ERROR) {
+            if (it == GitApiStatus.INTERNET_ERROR) {
                 Toast.makeText(activity, "No internet connection", Toast.LENGTH_SHORT).show()
             }
             if (it == GitApiStatus.QUERY_ERROR) {
@@ -39,9 +52,14 @@ class SearchFragment : Fragment() {
             }
         })
 
+
+
         binding.lifecycleOwner = this
 
-        binding.viewModel = viewModel
+
+        val packageManager = requireNotNull(this.activity).packageManager
+
+
 
         binding.button.setOnClickListener {
             // Hide the keyboard.
@@ -53,16 +71,18 @@ class SearchFragment : Fragment() {
             viewModel.getGitProperties()
         }
 
-        binding.searchRecycler.adapter = SearchRecyclerAdapter(SearchRecyclerAdapter.OnClickListener {
-            val webpage: Uri = Uri.parse(it.htmlUrl)
-            val intent = Intent(Intent.ACTION_VIEW, webpage)
-            val packageManager = activity?.packageManager ?: return@OnClickListener
-            if (intent.resolveActivity(packageManager) != null) {
-                startActivity(intent);
-            } else {
-                Toast.makeText(activity, "Can't reach browser", Toast.LENGTH_SHORT).show()
-            }
-        })
+        binding.searchRecycler.adapter =
+            SearchRecyclerAdapter(SearchRecyclerAdapter.OnClickListener {
+                viewModel.saveClickedRepo(it)
+                val webpage: Uri = Uri.parse(it.htmlUrl)
+                val intent = Intent(Intent.ACTION_VIEW, webpage)
+                if (intent.resolveActivity(packageManager) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(activity, "Can't reach browser", Toast.LENGTH_SHORT).show()
+                }
+
+            })
         return binding.root
     }
 
