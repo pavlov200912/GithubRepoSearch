@@ -25,42 +25,32 @@ class SearchViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
+    // Create a Coroutine scope using a job to be able to cancel when needed
+    private var viewModelJob = Job()
+
+    // the Coroutine runs using the Main (UI) dispatcher
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
+    // Text of query, observes editText field
     val queryText = MutableLiveData<String>()
 
     private val _status = MutableLiveData<GitApiStatus>()
-
     val status: LiveData<GitApiStatus>
         get() = _status
-
-    // The internal MutableLiveData String that stores the most recent response
-    private val _response = MutableLiveData<String>()
 
     // The external immutable LiveData for the response String
     private val _properties = MutableLiveData<List<GitProperty>>()
     val properties: LiveData<List<GitProperty>>
         get() = _properties
 
-    val response: LiveData<String>
-        get() = _response
-
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
-
-    // the Coroutine runs using the Main (UI) dispatcher
-    private val retrofitScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     init {
         queryText.value = ""
     }
 
-    /**
-     * Sets the value of the response LiveData to the Mars API status or the successful number of
-     * Mars properties retrieved.
-     */
+
     fun getGitProperties() {
-        retrofitScope.launch {
+        uiScope.launch {
             if (queryText.value == null || queryText.value == "") {
                 _status.value = GitApiStatus.QUERY_ERROR
                 return@launch
@@ -68,18 +58,15 @@ class SearchViewModel(
 
             try {
                 _status.value = GitApiStatus.LOADING
-                // Await the completion of our Retrofit request
+
+                // Await the completion of Retrofit request
                 val result = withContext(Dispatchers.IO) {
                     GitApi.retrofitService.getPropertiesAsync(queryText.value!!)
                 }.await()
 
-                Log.i("API_RESPONSE", result.toString())
-
                 _status.value = GitApiStatus.DONE
                 _properties.value = result.items
             } catch (e: Exception) {
-                Log.i("GitAPI", "RESPONSE_ERROR + ${e.message}")
-
                 _properties.value = ArrayList()
                 _status.value = GitApiStatus.INTERNET_ERROR
             }
@@ -98,8 +85,10 @@ class SearchViewModel(
                 "yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US
             )
             format.timeZone = TimeZone.getTimeZone("UTC")
+
             val creationDate: Date? = format.parse(gitProperty.created)
             val visitDate: Date = Calendar.getInstance().time
+
             val repo =  GitRepo(
                 id = gitProperty.id,
                 name = gitProperty.name,
@@ -110,6 +99,7 @@ class SearchViewModel(
                 dateOfCreation = creationDate,
                 dateOfVisit = visitDate
             )
+            // insert or update database
             val storedRepo = database.get(gitProperty.id)
             if (storedRepo == null) {
                 database.insert(repo)

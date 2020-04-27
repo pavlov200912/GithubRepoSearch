@@ -13,9 +13,7 @@ import com.example.yandexgithub.R
 import com.example.yandexgithub.database.GitDatabase
 import com.example.yandexgithub.databinding.FragmentHistoryBinding
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
+
 class HistoryFragment : Fragment() {
     private val viewModel by lazy {
         val application = requireNotNull(this.activity).application

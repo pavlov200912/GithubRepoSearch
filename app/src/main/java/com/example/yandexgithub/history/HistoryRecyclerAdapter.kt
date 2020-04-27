@@ -68,9 +68,9 @@ class HistoryRecyclerAdapter(private val onClickListener: HistoryRecyclerAdapter
     }
 
     /**
-     * Custom listener that handles clicks on [RecyclerView] items.  Passes the [GitProperty]
+     * Custom listener that handles clicks on [RecyclerView] items.  Passes the [GitRepo]
      * associated with the current item to the [onClick] function.
-     * @param clickListener lambda that will be called with the current [GitProperty]
+     * @param clickListener lambda that will be called with the current [GitRepo]
      */
     class OnClickListener(val clickListener: (gitRepo: GitRepo) -> Unit) {
         fun onClick(gitRepo: GitRepo) = clickListener(gitRepo)

@@ -1,12 +1,12 @@
 package com.example.yandexgithub
 
 import android.graphics.Color
-import android.util.Log
 import org.json.JSONObject
 
 
 fun languageToColor(language: String): Int {
     return if (jsonColors.isNull(language)){
+        // If there is no such language in JSON use C++ color as default
         Color.parseColor(jsonColors.getString("C++"))
     } else {
         Color.parseColor(jsonColors.getString(language))
@@ -14,7 +14,10 @@ fun languageToColor(language: String): Int {
 }
 
 
-// TODO: Add explanation to this solution
+/**
+ * This is very naive, temporary solution to store data about language colors
+ * Should be replaced with SQLite or some file in resources of the app
+ */
 val jsonColors = JSONObject(
     "{\n" +
             "    \"Mercury\": \"#ff2b2b\", \n" +

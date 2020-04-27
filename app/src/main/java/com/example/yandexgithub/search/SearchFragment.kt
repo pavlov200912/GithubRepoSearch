@@ -2,6 +2,7 @@ package com.example.yandexgithub.search
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,11 +16,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.yandexgithub.database.GitDatabase
 import com.example.yandexgithub.databinding.FragmentSearchBinding
+import com.example.yandexgithub.network.GitProperty
 
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class SearchFragment : Fragment() {
 
     override fun onCreateView(
@@ -44,6 +43,7 @@ class SearchFragment : Fragment() {
 
 
         viewModel.status.observe(viewLifecycleOwner, Observer {
+            // Toast if error with searching query
             if (it == GitApiStatus.INTERNET_ERROR) {
                 Toast.makeText(activity, "No internet connection", Toast.LENGTH_SHORT).show()
             }
@@ -74,16 +74,19 @@ class SearchFragment : Fragment() {
         binding.searchRecycler.adapter =
             SearchRecyclerAdapter(SearchRecyclerAdapter.OnClickListener {
                 viewModel.saveClickedRepo(it)
-                val webpage: Uri = Uri.parse(it.htmlUrl)
-                val intent = Intent(Intent.ACTION_VIEW, webpage)
-                if (intent.resolveActivity(packageManager) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(activity, "Can't reach browser", Toast.LENGTH_SHORT).show()
-                }
-
+                openBrowser(it, packageManager)
             })
         return binding.root
     }
 
+
+    private fun openBrowser(gitProperty: GitProperty, packageManager: PackageManager) {
+        val webpage: Uri = Uri.parse(gitProperty.htmlUrl)
+        val intent = Intent(Intent.ACTION_VIEW, webpage)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(activity, "Can't reach browser", Toast.LENGTH_SHORT).show()
+        }
+    }
 }

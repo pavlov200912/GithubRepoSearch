@@ -14,6 +14,7 @@ import com.example.yandexgithub.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
@@ -24,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this,navController, drawerLayout)
 
         NavigationUI.setupWithNavController(binding.navView, navController)
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

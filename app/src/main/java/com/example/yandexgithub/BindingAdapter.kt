@@ -15,6 +15,7 @@ import com.example.yandexgithub.search.GitApiStatus
 import com.example.yandexgithub.search.SearchRecyclerAdapter
 import java.text.SimpleDateFormat
 
+
 @BindingAdapter("searchData")
 fun bindSearchRecyclerView(
     recyclerView: RecyclerView,

@@ -14,6 +14,7 @@ class HistoryViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
+    // reposData - all visited repositories from database
     private val _reposData = MutableLiveData<List<GitRepo>>()
     val reposData: LiveData<List<GitRepo>>
         get() = _reposData
