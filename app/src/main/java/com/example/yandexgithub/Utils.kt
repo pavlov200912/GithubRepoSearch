@@ -4,6 +4,7 @@ import android.graphics.Color
 import org.json.JSONObject
 
 
+// Convert programming language name to color (as in github website)
 fun languageToColor(language: String): Int {
     return if (jsonColors.isNull(language)){
         // If there is no such language in JSON use C++ color as default
